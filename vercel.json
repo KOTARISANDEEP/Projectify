@@ -1,0 +1,12 @@
+{
+  "buildCommand": "cd project/project && npm run build",
+  "outputDirectory": "project/project/dist",
+  "installCommand": "cd project/project && npm install",
+  "framework": "vite",
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
+    }
+  ]
+}

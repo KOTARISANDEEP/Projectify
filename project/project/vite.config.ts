@@ -10,7 +10,9 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:5000',
+        target: process.env.NODE_ENV === 'production' 
+          ? process.env.BACKEND_URL || 'https://your-backend-domain.com'
+          : 'http://localhost:5000',
         changeOrigin: true,
         secure: false,
       },
