@@ -1208,7 +1208,7 @@ const AdminDashboard: React.FC = () => {
         }
 
         // Use the new API endpoint that handles email notifications
-        const response = await fetch('/api/admin-projects', {
+        const response = await fetch('https://projectify-rrv0.onrender.com/api/admin-projects', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

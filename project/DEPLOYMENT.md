@@ -1,58 +1,62 @@
 # 🚀 Projectify Deployment Guide
 
 ## Current Setup
-- **Backend**: Deployed on Render ✅
-- **Frontend**: Deployed on Netlify ✅
-- **Communication**: Frontend → Render Backend via Netlify redirects
+- **Backend**: Deployed on Render ✅ (`https://projectify-rrv0.onrender.com`)
+- **Frontend**: Deployed on Netlify ✅ (`https://projectify-edu.netlify.app`)
+- **Communication**: Frontend → Render Backend via direct API calls
 
 ## 🔧 Configuration
 
 ### Backend (Render)
-Your backend is already deployed on Render and working correctly.
+Your backend is already deployed on Render and working correctly at `https://projectify-rrv0.onrender.com`.
 
 ### Frontend (Netlify)
-The frontend is configured to communicate with your Render backend through Netlify redirects.
+The frontend is now configured to call your Render backend directly using the full URL.
 
-## 📝 Important: Update Backend URL
+## 📝 Current Configuration
 
-**Your Render backend URL is configured as: `https://projectify-rrv0.onrender.com`**
-
-The following files are now updated with the correct backend URL:
-
-1. **`project/netlify.toml`** ✅ - Redirects API calls to Render
-2. **`project/project/vite.config.ts`** ✅ - Production proxy target
-
-### Current Configuration:
-
-```toml
-# In netlify.toml
-to = "https://projectify-rrv0.onrender.com/api/:splat"
-```
+**Frontend API calls are now hardcoded to use the Render backend URL:**
 
 ```typescript
-// In vite.config.ts
-target: process.env.NODE_ENV === 'production' 
-  ? 'https://projectify-rrv0.onrender.com'
-  : 'http://localhost:5001',
+// In AdminDashboard.tsx
+const response = await fetch('https://projectify-rrv0.onrender.com/api/admin-projects', {
+  // ... request details
+});
 ```
 
-## 🚀 How It Works
+**API Configuration File:**
+```typescript
+// src/config/api.ts
+const API_BASE_URL = import.meta.env.PROD 
+  ? 'https://projectify-rrv0.onrender.com'  // Production: Render backend
+  : 'http://localhost:5001';                // Development: Local backend
+```
+
+## 🚀 How It Works Now
 
 1. **User visits**: `https://projectify-edu.netlify.app/admin/dashboard`
-2. **Frontend makes API call**: `/api/admin-projects`
-3. **Netlify redirects**: `/api/admin-projects` → `https://projectify-rrv0.onrender.com/api/admin-projects`
-4. **Backend responds**: Render backend processes the request and sends response back
+2. **Frontend makes API call**: Directly to `https://projectify-rrv0.onrender.com/api/admin-projects`
+3. **Backend responds**: Render backend processes the request and sends response back
+4. **No more 404 errors**: Frontend bypasses Netlify and calls Render directly
 
 ## 🔍 Testing
 
-After updating the backend URL:
-1. **Deploy to Netlify** (push changes to GitHub)
-2. **Test API calls** from your admin dashboard
-3. **Check Network tab** to ensure API calls are successful
-4. **Verify project creation** works without 404 errors
+After Netlify redeploys:
+1. **Test API calls** from your admin dashboard
+2. **Check Network tab** to ensure API calls go to Render backend
+3. **Verify project creation** works without 404 errors
+4. **Check console** for successful API responses
 
 ## 🐛 Troubleshooting
 
-- **404 errors**: Check if backend URL is correct in both files
+- **404 errors**: Should be resolved now - frontend calls Render directly
 - **CORS issues**: Ensure your Render backend allows requests from `projectify-edu.netlify.app`
 - **Build errors**: Check Netlify build logs for any issues
+- **API calls failing**: Verify Render backend is running and accessible
+
+## 🔄 Future Updates
+
+If you need to change the backend URL:
+1. Update `src/config/api.ts`
+2. Update any hardcoded fetch URLs in components
+3. Redeploy to Netlify
