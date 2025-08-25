@@ -137,7 +137,7 @@ class EmailService {
         <p><strong>The Projectify Team</strong></p>
         <hr>
         <p style="text-align: center;">
-          <a href="${process.env.FRONTEND_URL}/user/dashboard" style="background-color: #f97316; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px;">Browse More Projects</a>
+          <a href="https://projectify-edu.netlify.app/login" style="background-color: #f97316; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px;">Browse More Projects</a>
         </p>
       </div>
     `;
@@ -163,7 +163,7 @@ class EmailService {
         </div>
         
         <p style="text-align: center; margin: 30px 0;">
-          <a href="${process.env.FRONTEND_URL}/user/dashboard" style="background-color: #f97316; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">View Project & Apply</a>
+          <a href="https://projectify-edu.netlify.app/login" style="background-color: #f97316; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">View Project & Apply</a>
         </p>
         
         <p>Please log in to your dashboard to view and apply.</p>

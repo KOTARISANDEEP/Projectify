@@ -11,7 +11,7 @@ export default defineConfig({
     proxy: {
       '/api': {
         target: process.env.NODE_ENV === 'production' 
-          ? process.env.BACKEND_URL || 'https://your-backend-domain.com'
+          ? 'https://projectify-rrv0.onrender.com'
           : 'http://localhost:5000',
         changeOrigin: true,
         secure: false,

@@ -42,7 +42,12 @@ console.log('⚡ Rate limiting middleware loaded');
 
 // CORS configuration
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: [
+    process.env.FRONTEND_URL || 'http://localhost:3000',
+    'https://projectify-rrv0.vercel.app', // Add your Vercel domain here
+    'https://projectify-edu.netlify.app', // Add your Netlify domain here
+    'http://localhost:5173' // Keep local development
+  ],
   credentials: true
 }));
 console.log('🌐 CORS middleware loaded');
