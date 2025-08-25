@@ -1,65 +1,58 @@
-# 🚀 Projectify Backend Deployment Guide
+# 🚀 Projectify Deployment Guide
 
-## Deploying to Vercel
+## Current Setup
+- **Backend**: Deployed on Render ✅
+- **Frontend**: Deployed on Netlify ✅
+- **Communication**: Frontend → Render Backend via Netlify redirects
 
-### Prerequisites
-1. Install Vercel CLI: `npm i -g vercel`
-2. Have a Vercel account
-3. Firebase project configured
+## 🔧 Configuration
 
-### Step 1: Environment Variables
-Set these environment variables in your Vercel project:
+### Backend (Render)
+Your backend is already deployed on Render and working correctly.
 
-```bash
-# Firebase Configuration
-FIREBASE_PROJECT_ID=your-firebase-project-id
-FIREBASE_PRIVATE_KEY=your-firebase-private-key
-FIREBASE_CLIENT_EMAIL=your-firebase-client-email
+### Frontend (Netlify)
+The frontend is configured to communicate with your Render backend through Netlify redirects.
 
-# Email Configuration
-EMAIL_USER=your-gmail-address
-EMAIL_PASS=your-gmail-app-password
+## 📝 Important: Update Backend URL
 
-# Frontend URL
-FRONTEND_URL=https://projectify-edu.netlify.app
+**Your Render backend URL is configured as: `https://projectify-rrv0.onrender.com`**
+
+The following files are now updated with the correct backend URL:
+
+1. **`project/netlify.toml`** ✅ - Redirects API calls to Render
+2. **`project/project/vite.config.ts`** ✅ - Production proxy target
+
+### Current Configuration:
+
+```toml
+# In netlify.toml
+to = "https://projectify-rrv0.onrender.com/api/:splat"
 ```
-
-### Step 2: Deploy
-```bash
-# Navigate to project root
-cd project
-
-# Deploy to Vercel
-vercel
-
-# Follow the prompts to link to your Vercel project
-```
-
-### Step 3: Update Frontend
-After deployment, update your frontend to use the new Vercel API URL:
 
 ```typescript
-// In your frontend code, replace:
-fetch('/api/admin-projects', ...)
-
-// With:
-fetch('https://your-vercel-domain.vercel.app/api/admin-projects', ...)
+// In vite.config.ts
+target: process.env.NODE_ENV === 'production' 
+  ? 'https://projectify-rrv0.onrender.com'
+  : 'http://localhost:5001',
 ```
 
-### Step 4: Test
-Test the API endpoints:
-- Health check: `https://your-vercel-domain.vercel.app/api/health`
-- Admin projects: `https://your-vercel-domain.vercel.app/api/admin-projects`
+## 🚀 How It Works
 
-## Local Development
-```bash
-cd project/backend
-npm install
-npm run dev
-```
+1. **User visits**: `https://projectify-edu.netlify.app/admin/dashboard`
+2. **Frontend makes API call**: `/api/admin-projects`
+3. **Netlify redirects**: `/api/admin-projects` → `https://projectify-rrv0.onrender.com/api/admin-projects`
+4. **Backend responds**: Render backend processes the request and sends response back
 
-## Troubleshooting
-- Check Vercel logs for deployment errors
-- Verify environment variables are set correctly
-- Ensure Firebase credentials are valid
-- Check CORS configuration for your frontend domain
+## 🔍 Testing
+
+After updating the backend URL:
+1. **Deploy to Netlify** (push changes to GitHub)
+2. **Test API calls** from your admin dashboard
+3. **Check Network tab** to ensure API calls are successful
+4. **Verify project creation** works without 404 errors
+
+## 🐛 Troubleshooting
+
+- **404 errors**: Check if backend URL is correct in both files
+- **CORS issues**: Ensure your Render backend allows requests from `projectify-edu.netlify.app`
+- **Build errors**: Check Netlify build logs for any issues

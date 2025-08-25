@@ -129,13 +129,19 @@ app.use('*', (req, res) => {
 // Global error handler
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  console.log('='.repeat(60));
-  console.log('🚀 PROJECTIFY BACKEND SERVER STARTED SUCCESSFULLY!');
-  console.log('='.repeat(60));
-  console.log(`📍 Server running on: http://localhost:${PORT}`);
-  console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
-  console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`🔌 Port: ${PORT}`);
-  console.log('='.repeat(60));
-});
+// Only start the server if we're not in a serverless environment
+if (process.env.NODE_ENV !== 'production' || !process.env.NETLIFY) {
+  app.listen(PORT, () => {
+    console.log('='.repeat(60));
+    console.log('🚀 PROJECTIFY BACKEND SERVER STARTED SUCCESSFULLY!');
+    console.log('='.repeat(60));
+    console.log(`📍 Server running on: http://localhost:${PORT}`);
+    console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
+    console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`🔌 Port: ${PORT}`);
+    console.log('='.repeat(60));
+  });
+}
+
+// Export for Netlify Functions
+module.exports = app;

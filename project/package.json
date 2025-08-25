@@ -1,26 +1,11 @@
 {
-  "name": "projectify-fullstack",
+  "name": "projectify-netlify",
   "version": "1.0.0",
-  "description": "Projectify Full Stack Application",
-  "main": "backend/server.js",
+  "description": "Projectify Full Stack Application for Netlify",
   "scripts": {
-    "start": "node backend/server.js",
-    "dev": "nodemon backend/server.js",
-    "build": "echo 'No build step required for Node.js backend'",
-    "vercel-build": "echo 'Vercel build completed'"
-  },
-  "dependencies": {
-    "express": "^4.18.2",
-    "cors": "^2.8.5",
-    "helmet": "^7.1.0",
-    "dotenv": "^16.3.1",
-    "firebase-admin": "^12.0.0",
-    "nodemailer": "^6.9.7",
-    "express-validator": "^7.0.1",
-    "express-rate-limit": "^7.1.5"
-  },
-  "devDependencies": {
-    "nodemon": "^3.0.2"
+    "build": "cd project && npm run build",
+    "dev": "cd project && npm run dev",
+    "install-deps": "cd project && npm install && cd backend && npm install"
   },
   "engines": {
     "node": ">=18.0.0"

@@ -12,7 +12,7 @@ export default defineConfig({
       '/api': {
         target: process.env.NODE_ENV === 'production' 
           ? 'https://projectify-rrv0.onrender.com'
-          : 'http://localhost:5000',
+          : 'http://localhost:5001',
         changeOrigin: true,
         secure: false,
       },

@@ -1,0 +1,19 @@
+[build]
+  command = "npm run build"
+  publish = "project/dist"
+
+[build.environment]
+  NODE_VERSION = "18"
+
+# Redirect API calls to your Render backend
+[[redirects]]
+  from = "/api/*"
+  to = "https://projectify-rrv0.onrender.com/api/:splat"
+  status = 200
+  force = true
+
+# Handle frontend routing
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
