@@ -4,6 +4,7 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signInWithPopup,
+  signInWithRedirect,
   GoogleAuthProvider,
   signOut,
   onAuthStateChanged
@@ -84,27 +85,47 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const loginWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
-    const result = await signInWithPopup(auth, provider);
-    
-    // Check if user profile exists, if not create one
-    const docRef = doc(db, 'users', result.user.uid);
-    const docSnap = await getDoc(docRef);
-    
-    if (!docSnap.exists()) {
-      // Create new user profile for Google sign-in
-      const userProfile: UserProfile = {
-        id: result.user.uid,
-        name: result.user.displayName || 'User',
-        email: result.user.email || '',
-        role: result.user.email === 'projectify198@gmail.com' ? 'admin' : 'user'
-      };
-      
-      await setDoc(doc(db, 'users', result.user.uid), {
-        ...userProfile,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        status: 'active'
-      });
+    try {
+      const result = await signInWithPopup(auth, provider);
+
+      // Check if user profile exists, if not create one
+      const docRef = doc(db, 'users', result.user.uid);
+      const docSnap = await getDoc(docRef);
+
+      if (!docSnap.exists()) {
+        const userProfile: UserProfile = {
+          id: result.user.uid,
+          name: result.user.displayName || 'User',
+          email: result.user.email || '',
+          role: result.user.email === 'projectify198@gmail.com' ? 'admin' : 'user'
+        };
+
+        await setDoc(doc(db, 'users', result.user.uid), {
+          ...userProfile,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          status: 'active'
+        });
+      }
+    } catch (error: any) {
+      // Fallback to redirect in environments that block popups (or when instructed)
+      const fallbackErrors = [
+        'auth/operation-not-supported-in-this-environment',
+        'auth/popup-blocked',
+        'auth/popup-closed-by-user'
+      ];
+
+      // If domain is unauthorized, rethrow so UI can show a clear message
+      if (error?.code === 'auth/unauthorized-domain') {
+        throw error;
+      }
+
+      if (fallbackErrors.includes(error?.code)) {
+        await signInWithRedirect(auth, provider);
+        return;
+      }
+
+      throw error;
     }
   };
 

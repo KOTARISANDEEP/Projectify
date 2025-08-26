@@ -41,14 +41,34 @@ app.use(limiter);
 console.log('⚡ Rate limiting middleware loaded');
 
 // CORS configuration
+const allowedOrigins = [
+  'https://projectify-edu.netlify.app', // Production Netlify frontend
+  'http://localhost:3000', // Local development
+  'http://localhost:5173', // Local development
+];
+
+// Add FRONTEND_URL from environment if it exists
+if (process.env.FRONTEND_URL) {
+  allowedOrigins.push(process.env.FRONTEND_URL);
+}
+
+console.log('🌐 Allowed CORS origins:', allowedOrigins);
+
 app.use(cors({
-  origin: [
-    process.env.FRONTEND_URL || 'http://localhost:3000',
-    'https://projectify-rrv0.vercel.app', // Add your Vercel domain here
-    'https://projectify-edu.netlify.app', // Add your Netlify domain here
-    'http://localhost:5173' // Keep local development
-  ],
-  credentials: true
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.log('🚫 CORS blocked origin:', origin);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 console.log('🌐 CORS middleware loaded');
 

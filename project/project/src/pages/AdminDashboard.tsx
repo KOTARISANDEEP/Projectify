@@ -1197,7 +1197,37 @@ const AdminDashboard: React.FC = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
-      if (!newProjectForm.title || !newProjectForm.description) return;
+      
+      // Frontend validation
+      if (!newProjectForm.title || newProjectForm.title.trim().length < 3) {
+        setSuccessMessage('❌ Project title must be at least 3 characters long');
+        setTimeout(() => setSuccessMessage(null), 5000);
+        return;
+      }
+      
+      if (!newProjectForm.description || newProjectForm.description.trim().length < 10) {
+        setSuccessMessage('❌ Project description must be at least 10 characters long');
+        setTimeout(() => setSuccessMessage(null), 5000);
+        return;
+      }
+      
+      if (!newProjectForm.role || newProjectForm.role.trim().length < 2) {
+        setSuccessMessage('❌ Role must be at least 2 characters long');
+        setTimeout(() => setSuccessMessage(null), 5000);
+        return;
+      }
+      
+      if (!newProjectForm.timeline || newProjectForm.timeline.trim().length < 2) {
+        setSuccessMessage('❌ Timeline must be at least 2 characters long');
+        setTimeout(() => setSuccessMessage(null), 5000);
+        return;
+      }
+      
+      if (!newProjectForm.deadlineToApply) {
+        setSuccessMessage('❌ Deadline to apply is required');
+        setTimeout(() => setSuccessMessage(null), 5000);
+        return;
+      }
 
       setSubmitting(true);
       try {
@@ -1225,7 +1255,18 @@ const AdminDashboard: React.FC = () => {
         });
 
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          // Try to get detailed error message from backend
+          try {
+            const errorData = await response.json();
+            if (errorData.errors && Array.isArray(errorData.errors)) {
+              const errorMessages = errorData.errors.map((err: any) => err.msg).join(', ');
+              throw new Error(`Validation failed: ${errorMessages}`);
+            } else {
+              throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+            }
+          } catch (parseError) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
         }
 
         const result = await response.json();
